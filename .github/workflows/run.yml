@@ -16,6 +16,8 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,8 +30,8 @@ jobs:
         env:
           INDEED_EMAIL: ${{ secrets.INDEED_EMAIL }}
           INDEED_PASSWORD: ${{ secrets.INDEED_PASSWORD }}
-          KEYWORDS: ${{ github.event.inputs.keywords || 'AI Engineer' }}
-          LOCATION: ${{ github.event.inputs.location || 'Remote' }}
+          KEYWORDS: ${{ github.event.inputs.keywords }}
+          LOCATION: ${{ github.event.inputs.location }}
           MAX_APPS: "5"
           PHONE: "9999999999"
           N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }} # optional
