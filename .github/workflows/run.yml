@@ -1,0 +1,39 @@
+name: indeed-auto-apply
+on:
+  workflow_dispatch:
+    inputs:
+      keywords:
+        description: "Job keywords"
+        required: false
+        default: "AI Engineer"
+      location:
+        description: "Location"
+        required: false
+        default: "Remote"
+  schedule:
+    - cron: "0 4 * * *"  # daily at 04:00 UTC (adjust)
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run bot
+        env:
+          INDEED_EMAIL: ${{ secrets.INDEED_EMAIL }}
+          INDEED_PASSWORD: ${{ secrets.INDEED_PASSWORD }}
+          KEYWORDS: ${{ github.event.inputs.keywords || 'AI Engineer' }}
+          LOCATION: ${{ github.event.inputs.location || 'Remote' }}
+          MAX_APPS: "5"
+          PHONE: "9999999999"
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }} # optional
+        run: npm run apply
+      - name: Save summary
+        run: |
+          echo "Finished."
