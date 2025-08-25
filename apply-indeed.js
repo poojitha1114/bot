@@ -184,3 +184,18 @@ run().catch(err => {
   console.error(err);
   process.exit(1);
 });
+
+
+const { chromium } = require('playwright');
+
+(async () => {
+  const browser = await chromium.launch({
+    headless: true,
+    executablePath: '/usr/bin/google-chrome' // force system Chrome
+  });
+  const page = await browser.newPage();
+  await page.goto('https://example.com');
+  console.log(await page.title());
+  await browser.close();
+})();
+
